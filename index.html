@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompTIA A+ Study Map — Core 1 & 2</title>
+<meta name="description" content="Interactive 4-day study sprint for CompTIA A+ Core 1 (220-1101) & Core 2 (220-1102). Track progress, drill ports & acronyms, and pass both exams.">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<style>
+:root{
+  --bg:#0a0c12;--surface:#12151e;--surface2:#1a1e2c;--border:#262b3d;
+  --text:#dde1ef;--dim:#6a6f88;--bright:#f2f4fb;--accent:#4d9cf7;
+  --red:#d94848;--orange:#d9922e;--yellow:#c9b83a;--green:#2eb86a;
+  --blue:#4a82d4;--purple:#8a4fd4;--teal:#2db5a0;
+  --font-body:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-size:1rem;line-height:1.6;font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.35}
+.header-glow{position:relative;overflow:hidden}
+.header-glow::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 25% 75%,rgba(77,156,247,0.05) 0%,transparent 55%);pointer-events:none}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes scrollBanner { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+.block-card{animation:fadeSlideIn 0.35s ease both}
+.topic-row{transition:background 0.15s,opacity 0.2s;position:relative}.topic-row:hover{background:rgba(77,156,247,0.04)}
+.topic-check{transition:all 0.2s}.topic-check.done{animation:pulse 0.3s ease}
+.flash-card{transition:transform 0.2s,box-shadow 0.2s}.flash-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}.flash-card:active{transform:scale(0.98)}
+.lang-btn{transition:all 0.15s}.lang-btn:hover{background:var(--surface2) !important}.lang-btn.active{background:var(--accent) !important;color:#fff !important}
+.tab-btn{position:relative;transition:color 0.2s}.tab-btn::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:var(--accent);transform:scaleX(0);transition:transform 0.25s ease}.tab-btn.active::after{transform:scaleX(1)}
+.progress-fill.complete{background:linear-gradient(90deg,#2eb86a,#4ade80,#2eb86a) !important;background-size:200% 100%;animation:shimmer 2s ease infinite}
+.exam-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700;font-family:var(--font-mono);letter-spacing:0.5px}
+.labsim-link{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 6px;border-radius:3px;background:rgba(77,156,247,0.1);color:var(--accent);text-decoration:none;transition:all 0.15s;border:1px solid rgba(77,156,247,0.15)}.labsim-link:hover{background:rgba(77,156,247,0.2);border-color:rgba(77,156,247,0.3)}
+.chat-msg{animation:fadeSlideIn 0.2s ease both}
+@media(min-width:640px){.main-wrap{max-width:680px;margin:0 auto}}
+@media(min-width:900px){.main-wrap{max-width:820px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="lang.js"></script>
+<script src="data.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useCallback,useMemo} = React;
+
+const LABSIM = "https://labsimapp.testout.com/v6_0_726/index.html/productviewer/1231/default/e255c763-9e1b-4bd5-9b27-8d9a9e263bb2";
+
+const DOMAINS = [
+  {id:1,weight:50,color:"#E8A838",label:"Core 1"},
+  {id:2,weight:50,color:"#4a82d4",label:"Core 2"},
+];
+
+const BLOCKS = [
+  {id:"b1",day:1,domain:1,exam:1,timeKey:"time1",labelKey:"morning",titleKey:"b1",guideKey:"g1",tipKey:"tip1",
+   topics:["t1","t2","t3","t4","t5"],stars:["t3","t4"]},
+  {id:"b2",day:1,domain:1,exam:1,timeKey:"time1",labelKey:"midday",titleKey:"b2",guideKey:"g2",tipKey:"tip2",
+   topics:["t6","t7","t8","t9","t10"],stars:["t7","t9"]},
+  {id:"b3",day:1,domain:1,exam:1,timeKey:"time3",labelKey:"afternoon",titleKey:"b3",guideKey:"g3",tipKey:"tip3",
+   topics:["t11","t12","t13","t14"],stars:["t11","t13"]},
+  {id:"b4",day:1,domain:1,exam:1,timeKey:"time4",labelKey:"evening",titleKey:"b4",guideKey:"g4",tipKey:"tip4",
+   topics:["t15","t16","t17"],stars:["t15","t17"]},
+  {id:"b5",day:1,domain:1,exam:1,timeKey:"time5",labelKey:"lateEvening",titleKey:"b5",guideKey:"g5",tipKey:"tip5",
+   topics:["t18","t19","t20"],stars:["t18","t20"]},
+  {id:"b6",day:2,domain:1,exam:1,timeKey:"time1",labelKey:"morning",titleKey:"b6",guideKey:"g6",tipKey:"tip6",
+   topics:["t21","t22","t23"],stars:["t22"]},
+  {id:"b7",day:2,domain:1,exam:1,timeKey:"time1",labelKey:"midday",titleKey:"b7",guideKey:"g7",tipKey:"tip7",
+   topics:["t24","t25","t26","t27"],stars:["t24","t26","t27"]},
+  {id:"b8",day:2,domain:1,exam:1,timeKey:"time3",labelKey:"afternoon",titleKey:"b8",guideKey:"g8",tipKey:"tip8",
+   topics:["t28","t29","t30","t31","t32","t33","t34","t35","t36"],stars:["t32","t35"]},
+  {id:"b9",day:3,domain:2,exam:2,timeKey:"time1",labelKey:"morning",titleKey:"b9",guideKey:"g9",tipKey:"tip9",
+   topics:["t37","t38"],stars:["t38"]},
+  {id:"b10",day:3,domain:2,exam:2,timeKey:"time1",labelKey:"midday",titleKey:"b10",guideKey:"g10",tipKey:"tip10",
+   topics:["t39","t40","t41","t42"],stars:["t41","t42"]},
+  {id:"b11",day:3,domain:2,exam:2,timeKey:"time3",labelKey:"afternoon",titleKey:"b11",guideKey:"g11",tipKey:"tip11",
+   topics:["t43","t44","t45"],stars:["t43","t44"]},
+  {id:"b12",day:3,domain:2,exam:2,timeKey:"time4",labelKey:"evening",titleKey:"b12",guideKey:"g12",tipKey:"tip12",
+   topics:["t46","t47"],stars:["t46"]},
+  {id:"b13",day:4,domain:2,exam:2,timeKey:"time1",labelKey:"morning",titleKey:"b13",guideKey:"g13",tipKey:"tip13",
+   topics:["t48","t49","t50","t51"],stars:["t49","t50"]},
+  {id:"b14",day:4,domain:2,exam:2,timeKey:"time1",labelKey:"midday",titleKey:"b14",guideKey:"g14",tipKey:"tip14",
+   topics:["t52","t53"],stars:["t53"]},
+  {id:"b15",day:4,domain:2,exam:2,timeKey:"time3",labelKey:"afternoon",titleKey:"b15",guideKey:"g15",tipKey:"tip15",
+   topics:["t54","t55","t56","t57","t58"],stars:["t54","t56"]},
+  {id:"b16",day:4,domain:2,exam:2,timeKey:"time4",labelKey:"evening",titleKey:"b16",guideKey:"g16",tipKey:"tip16",
+   topics:["t59","t60","t61","t62"],stars:[]},
+];
+
+const DAY_META = [
+  {day:1,titleKey:"day1",subKey:"day1sub",shortKey:"day1short",accent:"#E8A838",exam:1},
+  {day:2,titleKey:"day2",subKey:"day2sub",shortKey:"day2short",accent:"#4a82d4",exam:1},
+  {day:3,titleKey:"day3",subKey:"day3sub",shortKey:"day3short",accent:"#2db5a0",exam:2},
+  {day:4,titleKey:"day4",subKey:"day4sub",shortKey:"day4short",accent:"#8a4fd4",exam:2},
+];
+
+const ALL_TOPICS = BLOCKS.flatMap(b=>b.topics);
+
+function TopicRow({tid, query, completed, toggle, dc, blockStars, t}) {
+  const [isHovered, setIsHovered] = React.useState(false);
+  return React.createElement("div",{className:"topic-row",
+    onMouseEnter:()=>setIsHovered(true),onMouseLeave:()=>setIsHovered(false),
+    onClick:()=>toggle(tid),style:{
+    display:"flex",alignItems:"flex-start",gap:8,padding:"7px 0",
+    borderBottom:"1px solid var(--border)",cursor:"pointer",opacity:completed?0.5:1}},
+    React.createElement("div",{className:"topic-check"+(completed?" done":""),style:{
+      width:18,height:18,minWidth:18,borderRadius:4,marginTop:1,
+      border:completed?"none":"2px solid "+dc+"40",
+      background:completed?dc:"transparent",display:"flex",alignItems:"center",justifyContent:"center",
+      fontSize:11,color:"#fff",fontWeight:700}},
+      completed&&"✓"
+    ),
+    React.createElement("span",{style:{fontSize:13,lineHeight:1.4,
+      color:completed?"var(--dim)":"var(--text)",textDecoration:completed?"line-through":"none"}},
+      blockStars.includes(tid)&&React.createElement("span",{style:{color:dc,fontWeight:700}},"★ "),
+      t[tid]
+    ),
+    isHovered && React.createElement("div",{style:{
+      position:"absolute",right:0,top:"50%",transform:"translateY(-50%)",
+      display:"flex",gap:8,background:"var(--surface)",padding:"4px 8px",
+      borderRadius:6,boxShadow:"0 2px 8px rgba(0,0,0,0.5)",zIndex:10}},
+      React.createElement("a",{href:"https://www.google.com/search?q="+query,target:"_blank",rel:"noreferrer",onClick:e=>e.stopPropagation(),style:{textDecoration:"none",fontSize:14}},"📖"),
+      React.createElement("a",{href:"https://www.youtube.com/results?search_query="+query,target:"_blank",rel:"noreferrer",onClick:e=>e.stopPropagation(),style:{textDecoration:"none",fontSize:14}},"🎥"),
+      React.createElement("a",{href:"https://www.google.com/search?q="+query+" lab interactive",target:"_blank",rel:"noreferrer",onClick:e=>e.stopPropagation(),style:{textDecoration:"none",fontSize:14}},"🕹️")
+    )
+  );
+}
+
+function App(){
+  const [lang,setLang]=useState(()=>localStorage.getItem("ap-lang")||"en");
+  const [completed,setCompleted]=useState(()=>{try{return JSON.parse(localStorage.getItem("ap-done")||"{}")}catch{return{}}});
+  const [confidence,setConfidence]=useState(()=>{try{return JSON.parse(localStorage.getItem("ap-conf")||"{}")}catch{return{}}});
+  const [answeredCards,setAnsweredCards]=useState(()=>{try{return JSON.parse(localStorage.getItem("ap-cards-done")||"{}")}catch{return{}}});
+  const [activeDay,setActiveDay]=useState(1);
+  const [view,setView]=useState("map");
+  const [flashIdx,setFlashIdx]=useState(0);
+  const [revealed,setRevealed]=useState(false);
+  const [langOpen,setLangOpen]=useState(false);
+  const [langSearch,setLangSearch]=useState("");
+  const [showBanner, setShowBanner] = useState(() => localStorage.getItem("ap-banner-dismissed") !== "true");
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([{role: "bot", text: "Hello! I am your A+ AI Tutor. How can I help you today?"}]);
+  const [chatInput, setChatInput] = useState("");
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+
+  const t=T[lang]||T.en;
+
+  useEffect(()=>{localStorage.setItem("ap-lang",lang)},[lang]);
+  useEffect(()=>{localStorage.setItem("ap-done",JSON.stringify(completed))},[completed]);
+  useEffect(()=>{localStorage.setItem("ap-conf",JSON.stringify(confidence))},[confidence]);
+  useEffect(()=>{localStorage.setItem("ap-cards-done",JSON.stringify(answeredCards))},[answeredCards]);
+  useEffect(()=>{if(!showBanner)localStorage.setItem("ap-banner-dismissed","true")},[showBanner]);
+
+  const toggle=(id)=>setCompleted(p=>({...p,[id]:!p[id]}));
+  const toggleCard=(id)=>setAnsweredCards(p=>({...p,[id]:!p[id]}));
+  const setConf=(bid,lv)=>setConfidence(p=>({...p,[bid]:lv}));
+
+  const doneCount=ALL_TOPICS.filter(id=>completed[id]).length;
+  const pct=Math.round(doneCount/ALL_TOPICS.length*100);
+
+  const [flashCards,setFlashCards]=useState([]);
+  const loadAndShuffle=(type)=>{
+    const data=type==="ports"?window.FLASHCARD_DATA.PORTS:window.FLASHCARD_DATA.ACRONYMS;
+    const shuffled=[...data].sort(()=>Math.random()-0.5);
+    setFlashCards(shuffled);
+  };
+
+  const handleChatSubmit=async(e)=>{
+    e.preventDefault();
+    if(!chatInput.trim()||isChatLoading)return;
+    const userInput=chatInput.trim();
+    setChatMessages(prev=>[...prev,{role:"user",text:userInput}]);
+    setChatInput("");
+    setIsChatLoading(true);
+    try{
+      const systemPrompt=`You are an expert CompTIA A+ AI Tutor. Restrict your answers to the scope of the A+ Core 1 (220-1101) and Core 2 (220-1102) exam objectives. Respond in ${t._name}. User question: `;
+      const res=await fetch("https://text.pollinations.ai/prompt/"+encodeURIComponent(systemPrompt+userInput));
+      let botResponse=await res.text();
+      botResponse=botResponse.replace(/⚠️ \*\*IMPORTANT NOTICE\*\* ⚠️[\s\S]*?normally\.\s*/,"");
+      setChatMessages(prev=>[...prev,{role:"bot",text:botResponse.trim()}]);
+    }catch(err){setChatMessages(prev=>[...prev,{role:"bot",text:"Connection error. Try again later."}])}
+    finally{setIsChatLoading(false)}
+  };
+
+  const resetBank=()=>{setAnsweredCards({});setShowResetModal(false)};
+  const hardReset=()=>{if(confirm(t.resetConfirm)){setCompleted({});setConfidence({});setAnsweredCards({});setShowResetModal(false)}};
+
+  const dayBlocks=BLOCKS.filter(b=>b.day===activeDay);
+  const dayMeta=DAY_META.find(d=>d.day===activeDay);
+  const confColors=["","#ef4444","#eab308","#22c55e","#8b5cf6"];
+  const confLabels=["",t.conf1,t.conf2,t.conf3,t.conf4];
+
+  return React.createElement("div",{className:"main-wrap"},
+    // BANNER
+    showBanner && React.createElement("div",{style:{background:"var(--accent)",color:"#fff",padding:"8px 10px",position:"relative",overflow:"hidden"}},
+      React.createElement("div",{style:{whiteSpace:"nowrap",animation:"scrollBanner 15s linear infinite",fontSize:13,fontWeight:600}},"🚀 New updates! Interactive A+ flashcards, improved resource links, and our new AI Study Tutor are now live!"),
+      React.createElement("button",{onClick:()=>setShowBanner(false),style:{position:"absolute",right:10,top:"50%",transform:"translateY(-50%)",background:"rgba(0,0,0,0.2)",border:"none",color:"#fff",borderRadius:"50%",width:20,height:20}},"×")
+    ),
+
+    // RESET MODAL
+    showResetModal && React.createElement("div",{style:{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",zIndex:9999,display:"flex",alignItems:"center",justifyContent:"center"}},
+      React.createElement("div",{style:{background:"var(--surface)",padding:24,borderRadius:12,width:300,border:"1px solid var(--border)",textAlign:"center"}},
+        React.createElement("h3",{style:{marginBottom:16,color:"var(--bright)"}},"Reset Options"),
+        React.createElement("button",{onClick:resetBank,style:{width:"100%",padding:10,marginBottom:10,background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:6,color:"var(--text)"}},"Reset Bank (Flashcards Only)"),
+        React.createElement("button",{onClick:hardReset,style:{width:"100%",padding:10,marginBottom:16,background:"var(--red)",border:"none",borderRadius:6,color:"#fff",fontWeight:"bold"}},"Hard Reset (All Progress)"),
+        React.createElement("button",{onClick:()=>setShowResetModal(false),style:{width:"100%",background:"transparent",border:"none",color:"var(--dim)"}},"Cancel")
+      )
+    ),
+
+    // FLOATING UI
+    React.createElement("a",{href:"https://github.com/JesseFlip/a-plus/issues/new",target:"_blank",style:{position:"fixed",bottom:20,left:20,zIndex:100,background:"var(--surface)",color:"var(--text)",border:"1px solid var(--border)",padding:"8px 16px",borderRadius:20,textDecoration:"none",fontSize:13,boxShadow:"0 4px 12px rgba(0,0,0,0.3)"}},"💡 Feedback"),
+    
+    React.createElement("div",{style:{position:"fixed",bottom:20,right:20,zIndex:100}},
+      chatOpen && React.createElement("div",{style:{position:"absolute",bottom:"100%",right:0,marginBottom:10,background:"var(--surface)",border:"1px solid var(--border)",borderRadius:12,width:300,height:400,boxShadow:"0 8px 32px rgba(0,0,0,0.5)",display:"flex",flexDirection:"column",overflow:"hidden"}},
+        React.createElement("div",{style:{padding:12,background:"var(--surface2)",borderBottom:"1px solid var(--border)",display:"flex",justifyContent:"space-between"}},
+          React.createElement("span",{style:{fontWeight:600,color:"var(--accent)"}},"A+ AI Tutor"),
+          React.createElement("button",{onClick:()=>setChatOpen(false),style:{background:"transparent",border:"none",color:"var(--dim)"}},"×")
+        ),
+        React.createElement("div",{style:{flex:1,padding:12,overflowY:"auto",display:"flex",flexDirection:"column",gap:8}},
+          chatMessages.map((msg,i)=>React.createElement("div",{key:i,className:"chat-msg",style:{alignSelf:msg.role==="user"?"flex-end":"flex-start",background:msg.role==="user"?"var(--accent)":"var(--surface2)",color:"#fff",padding:"8px 12px",borderRadius:8,maxWidth:"85%",fontSize:13}},msg.text)),
+          isChatLoading && React.createElement("div",{style:{fontSize:13,fontStyle:"italic",color:"var(--dim)"}},"Thinking...")
+        ),
+        React.createElement("form",{onSubmit:handleChatSubmit,style:{display:"flex",padding:8,borderTop:"1px solid var(--border)"}},
+          React.createElement("input",{type:"text",value:chatInput,onChange:e=>setChatInput(e.target.value),placeholder:"Ask A+...",style:{flex:1,padding:8,background:"var(--bg)",border:"1px solid var(--border)",borderRadius:20,color:"var(--text)",outline:"none"}}),
+          React.createElement("button",{type:"submit",style:{background:"var(--accent)",color:"#fff",border:"none",borderRadius:"50%",width:32,height:32,marginLeft:8}},"↑")
+        )
+      ),
+      React.createElement("button",{onClick:()=>setChatOpen(!chatOpen),style:{background:"var(--accent)",color:"#fff",border:"none",borderRadius:"50%",width:56,height:56,boxShadow:"0 4px 16px rgba(0,0,0,0.3)",fontSize:24}},"💬")
+    ),
+
+    // LANG PICKER
+    React.createElement("div",{style:{position:"fixed",top:showBanner?50:10,right:10,zIndex:100}},
+      React.createElement("button",{onClick:()=>setLangOpen(!langOpen),style:{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:8,padding:"6px 12px",color:"var(--text)",display:"flex",alignItems:"center",gap:6}},
+        React.createElement("img",{src:"https://flagcdn.com/w20/"+t._code+".png",width:20,style:{borderRadius:2}}),
+        React.createElement("span",{style:{fontFamily:"var(--font-mono)",fontSize:11}},lang.toUpperCase()),
+        React.createElement("span",null,langOpen?"▲":"▼")
+      ),
+      langOpen && React.createElement("div",{style:{position:"absolute",top:"100%",right:0,marginTop:4,background:"var(--surface)",border:"1px solid var(--border)",borderRadius:8,minWidth:180,maxHeight:300,overflowY:"auto"}},
+        React.createElement("div",{style:{padding:8,borderBottom:"1px solid var(--border)",position:"sticky",top:0,background:"var(--surface)"}},
+          React.createElement("input",{autoFocus:true,placeholder:"Search...",value:langSearch,onChange:e=>setLangSearch(e.target.value),style:{width:"100%",padding:6,background:"var(--bg)",color:"var(--text)",border:"1px solid var(--border)",borderRadius:4}})
+        ),
+        Object.entries(T).filter(([code,tr])=>tr._name.toLowerCase().includes(langSearch.toLowerCase())).map(([code,tr])=>
+          React.createElement("button",{key:code,className:"lang-btn"+(lang===code?" active":""),onClick:()=>{setLang(code);setLangOpen(false);setLangSearch("")},style:{display:"flex",alignItems:"center",gap:8,width:"100%",padding:10,border:"none",background:lang===code?"var(--accent)":"transparent",color:lang===code?"#fff":"var(--text)",textAlign:"left"}},
+            React.createElement("img",{src:"https://flagcdn.com/w20/"+tr._code+".png",width:20}),
+            React.createElement("span",null,tr._name)
+          )
+        )
+      )
+    ),
+
+    // HEADER
+    React.createElement("div",{className:"header-glow",style:{background:"linear-gradient(135deg,#12151e 0%,#0a0c12 100%)",borderBottom:"1px solid var(--border)",padding:24}},
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,marginBottom:4}},
+        React.createElement("span",{style:{fontFamily:"var(--font-mono)",fontSize:11,background:"#d94848",color:"#fff",padding:"2px 8px",borderRadius:4,fontWeight:600}},t.sprint),
+        React.createElement("span",{className:"exam-badge",style:{background:"rgba(232,168,56,0.15)",color:"#E8A838",border:"1px solid rgba(232,168,56,0.3)"}},t.core1),
+        React.createElement("span",{className:"exam-badge",style:{background:"rgba(74,130,212,0.15)",color:"#4a82d4",border:"1px solid rgba(74,130,212,0.3)"}},t.core2),
+        React.createElement("a",{href:"https://github.com/JesseFlip/a-plus",target:"_blank",style:{marginLeft:"auto",color:"var(--dim)"}},
+          React.createElement("svg",{width:16,height:16,viewBox:"0 0 24 24",fill:"currentColor"},React.createElement("path",{d:"M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"})))
+      ),
+      React.createElement("h1",{style:{fontSize:22,fontWeight:700,color:"var(--bright)",marginBottom:4}},t.title),
+      React.createElement("p",{style:{fontSize:11,color:"var(--dim)"}},t.subtitle1),
+      React.createElement("p",{style:{fontSize:11,color:"var(--dim)"}},t.subtitle2),
+      React.createElement("div",{style:{marginTop:14}},
+        React.createElement("div",{style:{display:"flex",justifyContent:"space-between",fontSize:11,color:"var(--dim)",marginBottom:4}},
+          React.createElement("span",null,doneCount+"/"+ALL_TOPICS.length+" "+t.topicsCovered),
+          React.createElement("span",{style:{fontFamily:"var(--font-mono)",fontWeight:600,color:pct>=80?"#22c55e":pct>=50?"#eab308":"var(--dim)"}},pct+"%")
+        ),
+        React.createElement("div",{style:{height:6,background:"var(--surface2)",borderRadius:3,overflow:"hidden"}},
+          React.createElement("div",{className:pct===100?"progress-fill complete":"progress-fill",style:{height:"100%",width:pct+"%",background:pct>=80?"linear-gradient(90deg,#22c55e,#4ade80)":pct>=50?"linear-gradient(90deg,#eab308,#facc15)":"linear-gradient(90deg,#60a5fa,#93c5fd)"}})
+        )
+      ),
+      React.createElement("div",{style:{display:"flex",gap:2,marginTop:12,borderRadius:4,overflow:"hidden",height:18}},
+        React.createElement("div",{style:{flex:1,background:"#E8A838",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,color:"#fff",fontFamily:"var(--font-mono)"}},"CORE 1 — 220-1101"),
+        React.createElement("div",{style:{flex:1,background:"#4a82d4",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,fontWeight:700,color:"#fff",fontFamily:"var(--font-mono)"}},"CORE 2 — 220-1102")
+      )
+    ),
+
+    // TABS
+    React.createElement("div",{style:{display:"flex",borderBottom:"1px solid var(--border)",background:"var(--surface)"}},
+      ["map","ports","acronyms"].map(v=>
+        React.createElement("button",{key:v,className:"tab-btn"+(view===v?" active":""),onClick:()=>{setView(v);setFlashIdx(0);setRevealed(false);if(v!=="map")loadAndShuffle(v)},style:{flex:1,padding:10,border:"none",fontSize:12,fontWeight:600,background:view===v?"var(--surface2)":"transparent",color:view===v?"var(--bright)":"var(--dim)"}},
+          v==="map"?"📋 "+t.studyMap:v==="ports"?"🔌 "+t.ports:"📖 "+t.acronyms
+        )
+      )
+    ),
+
+    // CONTENT
+    view==="map" ? React.createElement("div",null,
+      React.createElement("div",{style:{display:"flex",background:"var(--bg)"}},
+        DAY_META.map(dm=>React.createElement("button",{key:dm.day,onClick:()=>setActiveDay(dm.day),style:{flex:1,padding:12,border:"none",background:activeDay===dm.day?"var(--surface)":"var(--bg)",borderTop:activeDay===dm.day?"3px solid "+dm.accent:"3px solid transparent",display:"flex",flexDirection:"column",alignItems:"center"}},
+          React.createElement("span",{style:{fontSize:16,fontWeight:700,color:activeDay===dm.day?"var(--bright)":"var(--dim)"}},"D"+dm.day),
+          React.createElement("span",{style:{fontSize:8,color:"var(--dim)",textTransform:"uppercase"}},t[dm.shortKey])
+        ))
+      ),
+      React.createElement("div",{style:{padding:"16px 16px 100px"}},
+        React.createElement("div",{style:{marginBottom:16}},
+          React.createElement("h2",{style:{fontSize:18,fontWeight:700}},t[dayMeta.titleKey]),
+          React.createElement("p",{style:{fontSize:12,color:"var(--dim)"}},t[dayMeta.subKey])
+        ),
+        dayBlocks.map(block=>{
+          const bDone=block.topics.filter(id=>completed[id]).length;
+          const bPct=Math.round(bDone/block.topics.length*100);
+          const cf=confidence[block.id]||0;
+          return React.createElement("div",{key:block.id,className:"block-card",style:{background:"var(--surface)",border:"1px solid var(--border)",borderRadius:10,marginBottom:12,overflow:"hidden",borderLeft:"3px solid "+dayMeta.accent}},
+            React.createElement("div",{style:{padding:12}},
+              React.createElement("div",{style:{display:"flex",justifyContent:"space-between"}},
+                React.createElement("div",null,
+                  React.createElement("span",{style:{fontSize:10,fontFamily:"var(--font-mono)",color:dayMeta.accent,fontWeight:600}},t[block.labelKey]+" · "+t[block.timeKey]),
+                  React.createElement("h3",{style:{fontSize:15,marginTop:2}},t[block.titleKey]),
+                  React.createElement("a",{href:LABSIM,target:"_blank",className:"labsim-link",style:{marginTop:4}},"🧪 "+t.openLab+" — "+t[block.guideKey])
+                ),
+                React.createElement("span",{style:{fontSize:11,background:"var(--surface2)",padding:"2px 8px",borderRadius:4}},bDone+"/"+block.topics.length)
+              ),
+              React.createElement("div",{style:{height:3,background:"var(--surface2)",borderRadius:2,marginTop:6}},
+                React.createElement("div",{style:{height:"100%",width:bPct+"%",background:dayMeta.accent,borderRadius:2}})
+              )
+            ),
+            React.createElement("div",{style:{padding:"0 12px 8px"}},
+              block.topics.map(tid=>React.createElement(TopicRow,{key:tid,tid,query:encodeURIComponent("CompTIA A+ "+t[tid]),completed:completed[tid],toggle,dc:dayMeta.accent,blockStars:block.stars,t}))
+            ),
+            React.createElement("div",{style:{padding:10,background:"var(--surface2)",fontSize:11,color:dayMeta.accent,fontStyle:"italic"}},"💡 "+t[block.tipKey]),
+            React.createElement("div",{style:{padding:10,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}},
+              React.createElement("span",{style:{fontSize:10,color:"var(--dim)"}},t.confidence),
+              [1,2,3,4].map(lv=>React.createElement("button",{key:lv,onClick:()=>setConf(block.id,lv),style:{padding:"3px 8px",borderRadius:4,border:"none",fontSize:10,background:cf===lv?confColors[lv]+"30":"var(--surface)",color:cf===lv?confColors[lv]:"var(--dim)",fontWeight:cf===lv?700:400}},confLabels[lv]))
+            )
+          );
+        }),
+        React.createElement("p",{style:{fontSize:10,color:"var(--dim)",textAlign:"center",marginTop:20}},t.attribution),
+        React.createElement("div",{style:{textAlign:"center",marginTop:12}},
+          React.createElement("button",{onClick:()=>setShowResetModal(true),style:{background:"transparent",border:"1px solid var(--border)",borderRadius:6,padding:"8px 20px",color:"var(--dim)",fontSize:11}},t.resetAll)
+        )
+      )
+    ) : React.createElement("div",{style:{padding:20}},
+      flashCards.length>0 && React.createElement(React.Fragment,null,
+        React.createElement("div",{style:{display:"flex",justifyContent:"space-between",marginBottom:16}},
+          React.createElement("span",{style:{fontSize:12,color:"var(--dim)"}},(flashIdx+1)+" / "+flashCards.length),
+          React.createElement("button",{onClick:()=>toggleCard(flashCards[flashIdx].port||flashCards[flashIdx].a),style:{background:answeredCards[flashCards[flashIdx].port||flashCards[flashIdx].a]?"var(--green)":"var(--surface2)",border:"none",padding:"4px 8px",borderRadius:4,fontSize:11,color:"#fff"}},answeredCards[flashCards[flashIdx].port||flashCards[flashIdx].a]?"✓ Answered":"Mark Answered")
+        ),
+        React.createElement("div",{className:"flash-card",onClick:()=>setRevealed(!revealed),style:{background:"var(--surface2)",border:"1px solid var(--border)",borderRadius:12,padding:32,textAlign:"center",minHeight:140,display:"flex",flexDirection:"column",justifyContent:"center"}},
+          view==="ports" ? React.createElement(React.Fragment,null,
+            React.createElement("div",{style:{fontFamily:"var(--font-mono)",fontSize:32,color:"var(--accent)"}},flashCards[flashIdx].port),
+            revealed && React.createElement("div",{style:{marginTop:10}},
+              React.createElement("div",{style:{fontSize:20,color:"var(--bright)"}},flashCards[flashIdx].service),
+              React.createElement("div",{style:{fontSize:13,color:"var(--dim)"}},flashCards[flashIdx].note)
+            )
+          ) : React.createElement(React.Fragment,null,
+            React.createElement("div",{style:{fontFamily:"var(--font-mono)",fontSize:26,color:"#8a4fd4"}},flashCards[flashIdx].a),
+            revealed && React.createElement("div",{style:{fontSize:16,color:"var(--bright)",marginTop:10}},flashCards[flashIdx].f)
+          ),
+          !revealed && React.createElement("div",{style:{fontSize:13,color:"var(--dim)",marginTop:10}},t.tapToReveal)
+        ),
+        React.createElement("div",{style:{display:"flex",gap:8,marginTop:16}},
+          React.createElement("button",{onClick:()=>{setFlashIdx(Math.max(0,flashIdx-1));setRevealed(false)},style:{flex:1,padding:10,background:"var(--surface)",border:"1px solid var(--border)",borderRadius:8,color:"var(--text)"}},t.prev),
+          React.createElement("button",{onClick:()=>{setFlashIdx((flashIdx+1)%flashCards.length);setRevealed(false)},style:{flex:1,padding:10,background:"var(--accent)",border:"none",borderRadius:8,color:"#fff"}},t.next)
+        ),
+        React.createElement("div",{style:{marginTop:24}},
+          React.createElement("h3",{style:{fontSize:13,color:"var(--dim)",marginBottom:10}},t.quickRef),
+          React.createElement("div",{style:{display:"grid",gap:4}},
+            flashCards.map((c,i)=>React.createElement("div",{key:i,style:{display:"flex",justifyContent:"space-between",padding:6,background:i%2===0?"var(--surface)":"transparent",fontSize:12}},
+              React.createElement("span",{style:{color:"var(--accent)",fontFamily:"var(--font-mono)"}},view==="ports"?c.port:c.a),
+              React.createElement("span",{style:{textAlign:"right"}},view==="ports"?c.service:c.f)
+            ))
+          )
+        )
+      )
+    )
+  );
+}
+
+ReactDOM.render(React.createElement(App),document.getElementById("root"));
+
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js')})}
+</script>
+</body>
+</html>

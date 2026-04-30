@@ -1,7 +1,10 @@
-const CACHE_NAME = 'aplus-study-map-v1';
+const CACHE_NAME = 'ap-study-map-v1';
 const ASSETS = [
   './',
-  './aplus_study_map.html',
+  './index.html',
+  './lang.js',
+  './data.js',
+  './manifest.json',
   'https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js',

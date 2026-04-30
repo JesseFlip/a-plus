@@ -1,0 +1,16 @@
+{
+  "name": "CompTIA A+ Study Map",
+  "short_name": "A+ Map",
+  "description": "4-Day CompTIA A+ Core 1 & 2 Study Sprint",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#0a0c12",
+  "theme_color": "#4d9cf7",
+  "icons": [
+    {
+      "src": "https://flagcdn.com/w160/us.png",
+      "sizes": "160x160",
+      "type": "image/png"
+    }
+  ]
+}
