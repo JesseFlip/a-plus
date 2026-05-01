@@ -2,7 +2,7 @@
 
 A streamlined, interactive web-based study tool designed to help candidates navigate the **CompTIA A+ Core 1 (220-1101)** and **Core 2 (220-1102)** exam objectives in an accelerated 4-day format.
 
-**Live Demo:** [https://a-plus-study.netlify.app/](https://a-plus.netlify.app/)
+**Live Demo:** [https://a-plus-study.netlify.app/](https://a-pls.netlify.app/)
 
 ## 🚀 Overview
 Preparing for the A+ certification can be overwhelming with two separate exams and vast hardware/software domains. This project provides a structured roadmap that breaks down the official exam objectives into manageable daily milestones.
