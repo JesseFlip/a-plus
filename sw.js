@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ap-study-map-v1.2';
+const CACHE_NAME = 'ap-study-map-v1.3';
 const ASSETS = [
   './',
   './index.html',
