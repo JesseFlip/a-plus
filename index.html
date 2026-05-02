@@ -47,8 +47,8 @@ body::before{content:'';position:fixed;inset:0;background:url("data:image/svg+xm
 </head>
 <body>
 <div id="root"></div>
-<script src="lang.js?v=1.0.1"></script>
-<script src="data.js?v=1.0.1"></script>
+<script src="lang.js?v=1.0.2"></script>
+<script src="data.js?v=1.0.2"></script>
 <script type="text/babel">
 const {useState,useEffect,useCallback,useMemo} = React;
 
@@ -382,7 +382,7 @@ function App(){
 
 ReactDOM.render(React.createElement(App),document.getElementById("root"));
 
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js?v=1.1')})}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js?v=1.2')})}
 </script>
 </body>
 </html>
